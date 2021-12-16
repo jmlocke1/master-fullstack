@@ -1,7 +1,7 @@
 <?php
-
+namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
-
+//use App\Http\Controllers\PruebasController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +16,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/welcome', function () {
+    return "Hola Mundo con Laravel";
+});
+
+Route::get('/pruebas/{nombre?}', function ($nombre = null) {
+    $texto = "<h2>Texto desde una ruta.</h2>";
+    $texto .= "<p>El nombre es: $nombre<p>";
+    return view('pruebas', array(
+        'texto' => $texto
+    ));
+});
+
+Route::get('/animales', [PruebasController::class, 'index']);
