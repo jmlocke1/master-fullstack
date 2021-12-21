@@ -1,7 +1,5 @@
-<?php 
-// use Illuminate\Support\Str;
-// require_once __DIR__.'/../../../util/Util.php';
-use App\Utilities\Util as Utiles;
+<?php
+use App\Utilities\Utilities;
 ?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -12,7 +10,7 @@ use App\Utilities\Util as Utiles;
 <body>
     <p>Estoy escribiendo desde la vista</p>
     <?= $texto ?>
-    <p>UUID generada: <?= Utiles::getUUID(); ?></p>
+    <p>UUID generada: <?= Utilities::getUUID(); ?></p>
     
 </body>
 </html>
