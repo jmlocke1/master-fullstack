@@ -21,12 +21,12 @@ class PruebasController extends Controller
     
     public function testorm() {
         $posts = Post::all();
-        foreach($posts as $post){
-            echo "<h1>".$post->title."</h1>";
-            echo "<span style='color:gray;'>{$post->user->name} - {$post->category->name}</span>";
-            echo "<p>".$post->content."</p>";
-            echo '<hr>';
-        }
+//        foreach($posts as $postst){
+//            echo "<h1>".$post->title."</h1>";
+//            echo "<span style='color:gray;'>{$post->user->name} - {$post->category->name}</span>";
+//            echo "<p>".$post->content."</p>";
+//            echo '<hr>';
+//        }
         
         $categories = Category::all();
         foreach($categories as $category){
