@@ -1,8 +1,8 @@
 <?php
-namespace App\Utilities;
+namespace app\Utilities;
 
 use Illuminate\Support\Str;
-class Util {
+class Utilities {
     /**
      * Función que devuelve un UUID ordenable
      * 
