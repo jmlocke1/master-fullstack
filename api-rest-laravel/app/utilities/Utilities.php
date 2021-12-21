@@ -1,4 +1,6 @@
 <?php
+namespace App\Utilities;
+
 use Illuminate\Support\Str;
 class Util {
     /**
