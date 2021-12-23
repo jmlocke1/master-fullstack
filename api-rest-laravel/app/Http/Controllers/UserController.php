@@ -13,6 +13,7 @@ class UserController extends Controller
     public function register(Request $request){
         $name = $request->input('name');
         $surname = $request->input('surname');
+        
         return "Acción de registro de usuario: $name $surname";
     }
 

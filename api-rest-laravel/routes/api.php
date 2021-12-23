@@ -1,5 +1,5 @@
 <?php
-
+namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +17,23 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Rutas del API
+
+    /*
+     * Métodos HTTP comunes
+     * 
+     * GET: Conseguir datos o recursos
+     * POST: Guardar datos o recursos o hacer lógica desde un formulario
+     * PUT: Actualizar datos o recursos
+     * DELETE: Eliminar datos o recursos
+     */
+
+    // Rutas de prueba
+    Route::get('/usuario/pruebas', [UserController::class, 'pruebas']);
+    Route::get('/entrada/pruebas', [PostController::class, 'pruebas']);
+    Route::get('/categoria/pruebas', [CategoryController::class, 'pruebas']);
+    
+    // Rutas del controlador de usuario
+    Route::post('/register', [UserController::class, 'register']);
+    Route::post('/login', [UserController::class, 'login']);
