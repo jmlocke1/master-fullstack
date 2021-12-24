@@ -29,8 +29,7 @@ class UserController extends Controller
                 'email'     => 'required|email|unique:users', // Comprobar si el usuario existe ya (duplicado)
                 'password'  => 'required',
             ]);
-    //        var_dump($validate);
-    //        die();
+            
             if($validate->fails()){
                 $data = array(
                     'status' => 'error',
@@ -80,10 +79,31 @@ class UserController extends Controller
 
     public function login(Request $request) {
         $jwtAuth = new \JwtAuth();
+        // Recibir datos por POST
+        $json = $request->input('json', null);
+        $params = json_decode($json);
+        $params_array = json_decode($json, true);
+        // Validar esos datos
+        $validate = \Validator::make($params_array,[
+            'email'     => 'required|email', 
+            'password'  => 'required',
+        ]);
+
+        if($validate->fails()){
+            $signup = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'El usuario no se ha podido identificar',
+                'errors' => $validate->errors()
+            );
+        }else{
+            $getToken = !empty($params->getToken);
+            $signup = $jwtAuth->signup($params->email, $params->password, $getToken);
+        }
+        // Cifrar la password (no se hace con mi implementación
         
-        $email = 'jose@jose.com';
-        $password = 'jose';
         
-        return $jwtAuth->signup($email, $password, false);
+        
+        return $signup;
     }
 }
