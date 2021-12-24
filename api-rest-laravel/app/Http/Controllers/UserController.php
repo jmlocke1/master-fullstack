@@ -79,6 +79,11 @@ class UserController extends Controller
     }
 
     public function login(Request $request) {
-        return "Acción de login de usuario";
+        $jwtAuth = new \JwtAuth();
+        
+        $email = 'jose@jose.com';
+        $password = 'jose';
+        
+        return $jwtAuth->signup($email, $password, false);
     }
 }
