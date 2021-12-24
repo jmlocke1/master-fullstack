@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
-
+use App\Utilities\Password;
+use App\Models\User;
 class UserController extends Controller
 {
     public function pruebas(Request $request){
@@ -23,9 +24,9 @@ class UserController extends Controller
             $params_array = array_map('trim', $params_array);
             // Validar datos
             $validate = \Validator::make($params_array,[
-                'name'      => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/',
-                'surname'   => 'required|regex:/^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/',
-                'email'     => 'required|email',
+                'name'      => 'required|'. \Config\Config::VALIDATE_NAME,
+                'surname'   => 'required|'. \Config\Config::VALIDATE_NAME,
+                'email'     => 'required|email|unique:users', // Comprobar si el usuario existe ya (duplicado)
                 'password'  => 'required',
             ]);
     //        var_dump($validate);
@@ -38,10 +39,26 @@ class UserController extends Controller
                     'errors' => $validate->errors()
                 );
             }else{
+                // Validación pasada correctamente
+                
+                // Cifrar la contraseña
+                $password = Password::hash($params->password);
+                
+                // Crear el usuario
+                $user = new User();
+                $user->name = $params_array['name'];
+                $user->surname = $params_array['surname'];
+                $user->email = $params_array['email'];
+                $user->password = $password;
+                $user->name = $params_array['name'];
+                $user->role = \Config\Config::ROLE_USER;
+                $user->save();
+                
                 $data = array(
                     'status' => 'success',
                     'code' => 200,
-                    'message' => 'El usuario se ha creado correctamente'
+                    'message' => 'El usuario se ha creado correctamente',
+                    'user' => $user
                 );
             }
         }else{
