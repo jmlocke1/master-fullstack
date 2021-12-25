@@ -108,6 +108,7 @@ class UserController extends Controller
     }
     
     public function update(Request $request){
+        // Comprobar si el usuario está autentificado
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
@@ -166,5 +167,16 @@ class UserController extends Controller
         }
         return response()->json($data, $data['code']);
         //return response($data, $data['code']);
+    }
+    
+    public function upload(Request $request) {
+        
+        $data = array(
+            'code' => 400,
+            'status' => 'error',
+            'message' => 'Error al subir imagen'
+        );
+        
+        return response($data, $data['code'])->header('Content-Type', 'text/plain');
     }
 }

@@ -38,3 +38,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
     Route::put('/user/update', [UserController::class, 'update']);
+    Route::middleware(['api.auth'])->group(function(){
+        Route::post('/user/upload', [UserController::class, 'upload']);
+    });
+    

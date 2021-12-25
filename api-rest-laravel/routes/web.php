@@ -28,6 +28,10 @@ Route::get('/pruebas/{nombre?}', function ($nombre = null) {
         'texto' => $texto
     ));
 });
+// Ruta con restricciones de expresiones regulares
+Route::get('user/{id}/{name}', function ($id, $name) {
+    return "Usuario con id {$id} y nombre {$name}";
+})->where(['id' => '[0-9]+', 'name' => '[a-z]+[a-z0-9]+']);
 
 Route::get('/animales', [PruebasController::class, 'index']);
 Route::get('/test-orm', [PruebasController::class, 'testOrm']);
