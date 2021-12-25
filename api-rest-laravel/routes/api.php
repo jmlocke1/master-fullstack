@@ -42,4 +42,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         Route::put('/user/update', [UserController::class, 'update']);
         Route::post('/user/upload', [UserController::class, 'upload']);
     });
+    Route::get('/user/avatar/{filename}', [UserController::class, 'getImage']);
     
