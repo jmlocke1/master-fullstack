@@ -20,8 +20,11 @@ class ApiAuthMiddleware
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
-        
         if($checkToken){
+            // Sacar usuario identificado
+            $user = $jwtAuth->checkToken($token, true);
+            // Lo añadimos al request para pasarlo al controlador
+            $request->request->add(['user' => $user]);
             return $next($request);
         }else{
             $data = array(
@@ -31,7 +34,5 @@ class ApiAuthMiddleware
             );
             return response($data, $data['code']);
         }
-        
-        
     }
 }

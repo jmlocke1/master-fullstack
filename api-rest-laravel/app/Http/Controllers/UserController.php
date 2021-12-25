@@ -108,10 +108,6 @@ class UserController extends Controller
     }
     
     public function update(Request $request){
-        // Comprobar si el usuario está autentificado
-        $token = $request->header('Authorization');
-        $jwtAuth = new \JwtAuth();
-        $checkToken = $jwtAuth->checkToken($token);
         // Recoger los datos por post
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
@@ -121,11 +117,11 @@ class UserController extends Controller
                 'status' => 'error',
                 'message' => 'No se han mandado datos para la actualización'
             );
-        }elseif($checkToken && !empty($params_array)){
+        }else{
             // Actualizar usuario
             // Sacar usuario identificado
-            $user = $jwtAuth->checkToken($token, true);
-            
+            $user = $request->user;
+
             // Validar datos
             $validate = \Validator::make($params_array, [
                 'name'      => 'required|'. \Config\Config::VALIDATE_NAME,
@@ -157,16 +153,8 @@ class UserController extends Controller
                     'validate' => $validate->fails()
                 );
             }
-            
-        }else{
-            $data = array(
-                'code' => 400,
-                'status' => 'error',
-                'message' => 'El usuario no está identificado'
-            );
         }
         return response()->json($data, $data['code']);
-        //return response($data, $data['code']);
     }
     
     public function upload(Request $request) {
