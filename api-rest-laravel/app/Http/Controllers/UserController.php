@@ -106,4 +106,17 @@ class UserController extends Controller
         
         return $signup;
     }
+    
+    public function update(Request $request){
+        $token = $request->header('Authorization');
+        $jwtAuth = new \JwtAuth();
+        $checkToken = $jwtAuth->checkToken($token);
+        
+        if($checkToken){
+            echo "<h1>Login correcto</h1>";
+        }else{
+            echo "<h1>Login incorrecto</h1>";
+        }
+        die();
+    }
 }
