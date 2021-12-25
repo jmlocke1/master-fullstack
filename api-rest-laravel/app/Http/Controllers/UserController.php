@@ -100,7 +100,7 @@ class UserController extends Controller
             $getToken = !empty($params->getToken);
             $signup = $jwtAuth->signup($params->email, $params->password, $getToken);
         }
-        // Cifrar la password (no se hace con mi implementación
+        // Cifrar la password (no se hace con mi implementación)
         
         
         
@@ -111,12 +111,60 @@ class UserController extends Controller
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
-        
-        if($checkToken){
-            echo "<h1>Login correcto</h1>";
+        // Recoger los datos por post
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(empty($params_array)){
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'No se han mandado datos para la actualización'
+            );
+        }elseif($checkToken && !empty($params_array)){
+            // Actualizar usuario
+            // Sacar usuario identificado
+            $user = $jwtAuth->checkToken($token, true);
+            
+            // Validar datos
+            $validate = \Validator::make($params_array, [
+                'name'      => 'required|'. \Config\Config::VALIDATE_NAME,
+                'surname'   => 'required|'. \Config\Config::VALIDATE_NAME,
+                'email'     => 'required|email|unique:users,email,'.$user->sub.',id' // Comprobar si el usuario existe ya (duplicado)
+            ]);
+            if($validate->fails()){
+                $data = array(
+                    'status' => 'error',
+                    'code' => 404,
+                    'message' => 'El usuario no se ha actualizado',
+                    'errors' => $validate->errors()
+                );
+            }else {
+                // Quitar los campos que no quiero actualizar
+                unset($params_array['id']);
+                unset($params_array['role']);
+                unset($params_array['password']);
+                unset($params_array['created_at']);
+                unset($params_array['remember_token']);
+                // Actualizar usuario en bbdd
+                $user_update = User::where('id', $user->sub)->update($params_array);
+                // Devolver array con resultado
+                $data = array(
+                    'code' => 400,
+                    'status' => 'success',
+                    'user' => $user,
+                    'changes' => $params_array,
+                    'validate' => $validate->fails()
+                );
+            }
+            
         }else{
-            echo "<h1>Login incorrecto</h1>";
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El usuario no está identificado'
+            );
         }
-        die();
+        return response()->json($data, $data['code']);
+        //return response($data, $data['code']);
     }
 }

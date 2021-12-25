@@ -40,7 +40,7 @@ class JwtAuth {
         // Generar el token con los datos del usuario identificado
         if($signup){
             $token = [
-                'sub'       =>  $user->id,
+                'sub'       =>  $user->id, // sub, en Jwt, hace siempre referencia al id del usuario
                 'email'     =>  $user->email,
                 'name'      =>  $user->name,
                 'surname'   =>  $user->surname,

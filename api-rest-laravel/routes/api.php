@@ -37,4 +37,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     // Rutas del controlador de usuario
     Route::post('/register', [UserController::class, 'register']);
     Route::post('/login', [UserController::class, 'login']);
-    Route::post('/user/update', [UserController::class, 'update']);
+    Route::put('/user/update', [UserController::class, 'update']);
