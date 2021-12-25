@@ -1,4 +1,4 @@
 *
 !public/
-!users/*.txt
 !.gitignore
+!users/.gitignore
