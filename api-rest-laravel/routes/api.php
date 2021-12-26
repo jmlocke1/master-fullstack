@@ -30,9 +30,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
      */
 
     // Rutas de prueba
-    Route::get('/usuario/pruebas', [UserController::class, 'pruebas']);
-    Route::get('/entrada/pruebas', [PostController::class, 'pruebas']);
-    Route::get('/categoria/pruebas', [CategoryController::class, 'pruebas']);
+//    Route::get('/usuario/pruebas', [UserController::class, 'pruebas']);
+//    Route::get('/entrada/pruebas', [PostController::class, 'pruebas']);
+//    Route::get('/categoria/pruebas', [CategoryController::class, 'pruebas']);
     
     // Rutas del controlador de usuario
     Route::post('/register', [UserController::class, 'register']);
@@ -45,3 +45,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('/user/avatar/{filename}', [UserController::class, 'getImage']);
     Route::get('/user/detail/{id}', [UserController::class, 'detail']);
     
+    // Rutas del controlador de categorías
+    Route::resource('/category', CategoryController::class);

@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Rutas de prueba
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+Route::view('/', 'welcome'); // Ruta que devuelve una vista. Es otra forma de escribir la ruta anterior
 
 Route::get('/welcome', function () {
     return "Hola Mundo con Laravel";
