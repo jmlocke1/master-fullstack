@@ -186,10 +186,15 @@ class UserController extends Controller
     }
     
     public function getImage($filename){
+        $path = storage_path('app\\users\\' . $filename);
         $isset = \Storage::disk('users')->exists($filename);
         if($isset){
-            $file = \Storage::disk('users')->get($filename);
-            return new Response($file, 200);
+            // $file = \Storage::disk('users')->get($filename);
+            $type = \File::mimeType($path);
+            // return new Response($file, 200); // Lo que se indica en el video
+            return response()->file($path, [
+                'Content-Type' => $type
+            ]); // Solución que indica Ángel Alexander Quiroz: https://www.udemy.com/course/master-en-desarrollo-web-full-stack-angular-node-laravel-symfony/learn/lecture/13167532#questions/8641706
         }else{
             $data = array (
                 'code' => 400,
@@ -198,6 +203,24 @@ class UserController extends Controller
             );
             return response($data, $data['code']);
         }
+    }
+    
+    public function detail($id){
+        $user = User::find($id);
         
+        if(is_object($user)){
+            $data = array(
+                'code' => 200,
+                'status' => 'success',
+                'user' => $user
+            );
+        } else {
+            $data = array(
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'El usuario no existe.'
+            );
+        }
+        return response($data, $data['code']);
     }
 }
