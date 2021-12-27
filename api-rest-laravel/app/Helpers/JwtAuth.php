@@ -9,6 +9,7 @@ namespace App\Helpers;
 
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use App\Models\User;
 
 /**
@@ -87,5 +88,21 @@ class JwtAuth {
         }
         return $auth;
     }
-            
+    
+    /**
+     * Decodifica los datos del usuario a partir del token que se
+     * pasa por el request
+     * 
+     * @param Request $request
+     * @return array
+     */
+    public function getAutenticateUserData(Request $request){
+        $token = $request->header('Authorization');
+        $user = $this->checkToken($token, true);
+        return $user;
+    }
+    
+    public static function factory(): JwtAuth {
+        return new \JwtAuth();
+    }
 }

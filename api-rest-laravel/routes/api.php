@@ -46,4 +46,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::get('/user/detail/{id}', [UserController::class, 'detail']);
     
     // Rutas del controlador de categorías
-    Route::resource('/category', CategoryController::class);
+    Route::resources([
+        '/category' => CategoryController::class,
+        '/post' => PostController::class
+    ]);

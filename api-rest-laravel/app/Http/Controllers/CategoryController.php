@@ -103,13 +103,39 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param  int  $id
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(int $id, Request $request)
     {
-        //
+        // Recoger json por post
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+        if(empty($params_array)){
+            return Utilities::responseMessage(400, false, 'No se han enviado datos de categoría.');
+        }
+        // Validar los datos
+        $validate = \Validator::make($params_array, [
+            'name' => 'required'
+        ]);
+        if($validate->fails()){
+            return Utilities::responseMessage(400, false, 'No se ha guardado la categoría.', ['errors' => $validate->errors()]);
+        }
+        // Quitar lo que no quiero actualizar
+        unset($params_array['id']);
+        unset($params_array['created_at']);
+        // Actualizar el registro (categoría)
+        //$category = Category::where('id', $id)->update($params_array);
+        $category = Category::where('id', $id)->update($params_array);
+        if($category){
+            return Utilities::responseMessage(200, true, 
+                'Categoría actualizada correctamente', ['category' => $params_array]);
+        }else {
+            return Utilities::responseMessage(400, false, 
+                'La Categoría no se pudo actualizar');
+        }
+        
     }
 
     /**

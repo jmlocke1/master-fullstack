@@ -11,6 +11,18 @@ class Post extends Model
     
     protected $table = 'posts';
     
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'title',
+        'content',
+        'category_id',
+        'image'
+    ];
+    
     // Relación de uno a muchos inversa (muchos a uno)
     public function user() {
         return $this->belongsTo('App\Models\User', 'user_id');
