@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Utilities\Utilities;
 
 class PostController extends Controller
 {
     
     public function __construct() {
-        $this->middleware('api.auth', ['except' => ['index', 'show']]);
+        $this->middleware('api.auth', ['except' => [
+                'index', 
+                'show', 
+                'getImage',
+                'getPostsByCategory',
+                'getPostsByUser'
+            ]]);
     }
     /**
      * Display a listing of the resource.
@@ -193,5 +200,53 @@ class PostController extends Controller
         
         // Devolver algo
         return Utilities::message(200, true, 'Post borrado correctamente', ['post' => $post]);
+    }
+    
+    public function upload(Request $request) {
+        // Recoger la imagen de la petición
+        $image =$request->file('file0');
+        if(!$image){
+            return Utilities::responseMessage(400, false, 'Error al subir la imagen.');
+        }
+        // Validar la imagen
+        $validate = \Validator::make($request->all(), [
+            'file0' => 'required|image|mimes:jpg,jpeg,png,gif'
+        ]);
+        if($validate->fails()){
+            return Utilities::responseMessage(400, false, 
+                    'La imagen no tiene el tipo de dato permitido.', 
+                    ['errors' => $validate->errors()]);
+        }
+        // Guardar la imagen
+        $image_name = time().$image->getClientOriginalName();
+        \Storage::disk('images')->put($image_name, \File::get($image));
+        // Devolver datos
+        return Utilities::responseMessage(200, true, 'Imagen subida correctamente', ['image' => $image_name]);
+    }
+    
+    public function getImage($filename){
+        // Comprobar si existe el fichero
+        $isset = \Storage::disk('images')->exists($filename);
+        
+        if($isset){
+            // Conseguir la imagen
+            $file = \Storage::disk('images')->get($filename);
+            // Devolver la imagen
+            return new Response($file, 200);
+        }else{
+            // Mostrar error
+            return Utilities::responseMessage(404, false, 'La imagen no existe.');
+        }
+    }
+    
+    public function getPostsByCategory($id){
+        $posts = Post::where('category_id', $id)->get();
+        
+        return Utilities::message(200, true, 'Post por categoría', ['posts' => $posts]);
+    }
+    
+    public function getPostsByUser($id){
+        $posts = Post::where('user_id', $id)->get();
+        return Utilities::message(200, true, 'Post por usuario', ['posts' => $posts]);
     }
 }

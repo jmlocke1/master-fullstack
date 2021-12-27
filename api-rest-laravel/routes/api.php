@@ -50,3 +50,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
         '/category' => CategoryController::class,
         '/post' => PostController::class
     ]);
+    Route::post('/post/upload', [PostController::class, 'upload']);
+    Route::get('/post/image/{filename}', [PostController::class, 'getImage']);
+    Route::get('/post/category/{id}', [PostController::class, 'getPostsByCategory']);
+    Route::get('/post/user/{id}', [PostController::class, 'getPostsByUser']);
