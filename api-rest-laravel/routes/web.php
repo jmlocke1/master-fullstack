@@ -36,5 +36,6 @@ Route::get('user/{id}/{name}', function ($id, $name) {
 
 Route::get('/animales', [PruebasController::class, 'index']);
 Route::get('/test-orm', [PruebasController::class, 'testOrm']);
+Route::get('/message', [PruebasController::class, 'message']);
 
     

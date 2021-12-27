@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use \Illuminate\Database\Eloquent\ModelNotFoundException;
+use \Illuminate\Http\Response;
+use App\Utilities\Utilities;
 
 class CategoryController extends Controller
 {
@@ -19,12 +22,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        
-        return response()->json([
-            'code' => 200,
-            'status' => 'success',
-            'categories' => $categories
-        ]);
+        return Utilities::message(200, true, '', ['categories' => $categories]);
     }
 
     /**
@@ -45,70 +43,51 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // Recoger los datos or post
+        // Recoger los datos por post
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
-        if(!empty($params_array)){
-            // Validar los datos
-            $validate = \Validator::make($params_array, [
-                'name' => 'required|unique:categories'
-            ]);
-            
-            // Guardar la categoría
-            if($validate->fails()){
-                $data = [
-                    'code' => 400,
-                    'status' => 'error',
-                    'message' => 'No se ha guardado la categoría.',
-                    'errors' => $validate->errors()
-                ];
-            }else{
-                $category = new Category();
-                $category->name = $params_array['name'];
-                $category->save();
-
-                $data = [
-                    'code' => 200,
-                    'status' => 'success',
-                    'category' => $category
-                ];
-            }
-        }else{
-            $data = [
-                'code' => 400,
-                'status' => 'error',
-                'message' => 'No se han enviado datos de categoría.'
-            ];
+        if(empty($params_array)){
+            return Utilities::responseMessage(400, false, 'No se han enviado datos de categoría.');
         }
-            
-        // Devolver los resultados
-        return response($data, $data['code']);
-    }
+        $validate = $this->validateStore($params_array);
+        if($validate->fails()){
+            return Utilities::responseMessage(400, false, 'No se ha guardado la categoría.', ['errors' => $validate->errors()]);
+        }
 
+        // Guardar la categoría
+        $category = new Category();
+        $category->name = $params_array['name'];
+        $category->save();
+        return Utilities::responseMessage(200, true, 'Categoría almacenada correctamente', ['category' => $category]);
+    }
+    
+    
+    private function validateStore($params_array): \Illuminate\Validation\Validator {
+        // Validar los datos
+        $validate = \Validator::make($params_array, [
+            'name' => 'required|unique:categories'
+        ]);
+        return $validate;
+    }
+    
+    
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): Response
     {
-        $category = Category::find($id);
-        if(is_object($category)){
-            $data = [
-                'code' => 200,
-                'status' => 'success',
-                'category' => $category
-            ];
-        }else{
-            $data = [
-                'code' => 404,
-                'status' => 'error',
-                'message' => 'La categoría no existe'
-            ];
+        try{
+            $category = Category::findOrFail($id);
+            return Utilities::responseMessage(200, true, '', ['category' => $category]);
+        } catch (ModelNotFoundException $ex) {
+            return Utilities::responseMessage(404, false, 'La categoría no existe');
         }
-        return response($data, $data['code']);
     }
+    
+
 
     /**
      * Show the form for editing the specified resource.

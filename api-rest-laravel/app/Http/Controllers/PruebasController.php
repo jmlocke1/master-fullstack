@@ -40,4 +40,10 @@ class PruebasController extends Controller
         }
         die();
     }
+    public function message(){
+        $category = \App\Models\Category::findOrFail(1);
+        echo '<pre>';
+        echo \Utilities::responseMessage(200, true, '', ['category' => $category]);
+        echo '</pre>';
+    }
 }
