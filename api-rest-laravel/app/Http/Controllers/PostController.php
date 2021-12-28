@@ -50,9 +50,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         // Recoger datos por POST
-        $json = $request->input('json', null);
-        $params = json_decode($json);
-        $params_array = json_decode($json, true);
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         if(empty($params_array)){
             return Utilities::responseMessage(400, false, 'No se han enviado datos de post. Envía los datos correctamente.');
         }
@@ -95,6 +93,13 @@ class PostController extends Controller
                     'post' => $post,
                     'Resultado' => $result
                 ]);
+    }
+    
+    private function getDataFromPost(Request $request){
+        $json = $request->input('json', null);
+        $params = json_decode($json);
+        $params_array = json_decode($json, true);
+        return [$json, $params, $params_array];
     }
 
     /**

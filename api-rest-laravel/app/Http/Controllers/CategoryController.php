@@ -44,8 +44,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         // Recoger los datos por post
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         if(empty($params_array)){
             return Utilities::responseMessage(400, false, 'No se han enviado datos de categoría.');
         }
@@ -110,8 +109,7 @@ class CategoryController extends Controller
     public function update(int $id, Request $request)
     {
         // Recoger json por post
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         if(empty($params_array)){
             return Utilities::responseMessage(400, false, 'No se han enviado datos de categoría.');
         }

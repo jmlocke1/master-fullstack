@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Validator;
 use App\Utilities\Password;
+use App\Utilities\Utilities;
 use App\Models\User;
 class UserController extends Controller
 {
@@ -17,9 +18,7 @@ class UserController extends Controller
     public function register(Request $request){
         // Códigos http: https://developer.mozilla.org/es/docs/Web/HTTP/Status
         // Recoger los datos del usuario por post
-        $json = $request->input('json', null);
-        $params = json_decode($json); // objeto
-        $params_array = json_decode($json, true); // array
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         if(!empty($params) && !empty($params_array)){
             //Limpiar datos
             $params_array = array_map('trim', $params_array);
@@ -81,9 +80,7 @@ class UserController extends Controller
     public function login(Request $request) {
         $jwtAuth = new \JwtAuth();
         // Recibir datos por POST
-        $json = $request->input('json', null);
-        $params = json_decode($json);
-        $params_array = json_decode($json, true);
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         // Validar esos datos
         $validate = \Validator::make($params_array,[
             'email'     => 'required|email', 
@@ -110,8 +107,7 @@ class UserController extends Controller
     
     public function update(Request $request){
         // Recoger los datos por post
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
+        [$json, $params, $params_array] = Utilities::getDataFromPost($request);
         if(empty($params_array)){
             $data = array(
                 'code' => 400,
