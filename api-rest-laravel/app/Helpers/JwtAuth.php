@@ -10,6 +10,7 @@ namespace App\Helpers;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use app\Utilities\Utilities;
 use App\Models\User;
 
 /**
@@ -37,32 +38,30 @@ class JwtAuth {
         
         // Comprobar si son correctas
         $signup = (is_object($user) && \App\Utilities\Password::verify($password, $user->password));
-        
-        // Generar el token con los datos del usuario identificado
-        if($signup){
-            $token = [
-                'sub'       =>  $user->id, // sub, en Jwt, hace siempre referencia al id del usuario
-                'email'     =>  $user->email,
-                'name'      =>  $user->name,
-                'surname'   =>  $user->surname,
-                'iat'       =>  time(),                     // Tiempo de creación del token
-                'exp'       =>  time() + (7 * 24 * 60 * 60) // Tiempo de expiración del token, en segundos (el ejemplo es una semana)
-            ];
-            $jwt = JWT::encode($token, $this->key, 'HS256');
-            $decoded = JWT::decode($jwt, $this->key, ['HS256']);
-            // Devolver los datos decodificados o el token, en función de un parámetro
-            if($getToken){
-                $data = $jwt;
-            }else{
-                $data = $decoded;
-            }
-        }else{
-            $data = [
-                'status' => 'error',
-                'message' => 'Login incorrecto.'
-            ];
+        if(!$signup){
+            return Utilities::responseMessage(400, false, 'Login incorrecto');
         }
-        return $data;
+        // Generar el token con los datos del usuario identificado
+        $token = [
+            'sub'       =>  $user->id, // sub, en Jwt, hace siempre referencia al id del usuario
+            'email'     =>  $user->email,
+            'name'      =>  $user->name,
+            'surname'   =>  $user->surname,
+            'iat'       =>  time(),                     // Tiempo de creación del token
+            'exp'       =>  time() + (7 * 24 * 60 * 60) // Tiempo de expiración del token, en segundos (el ejemplo es una semana)
+        ];
+        $jwt = JWT::encode($token, $this->key, 'HS256');
+        $decoded = JWT::decode($jwt, $this->key, ['HS256']);
+        return Utilities::responseMessage(200, true, 'Usuario autentificado', [
+                    'token' => $jwt,
+                    'userdata' => $decoded
+                ]);
+        // Devolver los datos decodificados o el token, en función de un parámetro
+        if($getToken){
+            return Utilities::responseMessage(200, true, 'Token del usuario', ['token' => $jwt]);
+        }else{
+            return Utilities::responseMessage(200, true, 'Datos del usuario', ['datos' => $decoded]);
+        }
     }
     
     public function checkToken($jwt, $getIdentity = false) {

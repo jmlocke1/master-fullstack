@@ -78,9 +78,11 @@ class UserController extends Controller
     }
 
     public function login(Request $request) {
+        
         $jwtAuth = new \JwtAuth();
         // Recibir datos por POST
         [$json, $params, $params_array] = Utilities::getDataFromPost($request);
+        //return Utilities::responseMessage(200, true, 'Estamos en login', ['params' => $params_array]);
         // Validar esos datos
         $validate = \Validator::make($params_array,[
             'email'     => 'required|email', 
@@ -88,21 +90,14 @@ class UserController extends Controller
         ]);
 
         if($validate->fails()){
-            $signup = array(
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'El usuario no se ha podido identificar',
-                'errors' => $validate->errors()
-            );
+            return Utilities::responseMessage(400, false, 'El usuario no se ha podido identificar', [
+                        'errors' => $validate->errors()
+                    ]);
         }else{
-            $getToken = !empty($params->getToken);
+            $getToken = !empty($params->gettoken);
             $signup = $jwtAuth->signup($params->email, $params->password, $getToken);
+            return $signup;
         }
-        // Cifrar la password (no se hace con mi implementación)
-        
-        
-        
-        return $signup;
     }
     
     public function update(Request $request){

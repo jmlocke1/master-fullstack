@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
@@ -12,8 +13,12 @@ export class LoginComponent implements OnInit {
     public page_title: string;
     public user: User;
     public status: string;
+    public token:string = '';
+    public identity:any ;
     constructor(
-      private _userService: UserService
+      private _userService: UserService,
+      private _router: Router,
+      private _route: ActivatedRoute
     ) { 
         this.page_title = 'Identifícate';
         this.user = new User(1, '', '', 'ROLE_USER', '', '', '','');
@@ -21,18 +26,47 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit(): void {
+      // Se ejecuta simepre y cierra sesión solo cuando le llega el parámetro por la url
+      this.logout();
     }
 
     onSubmit(form: any){
-      this._userService.signup(this.user).subscribe(
+      this._userService.signup(this.user, "true").subscribe(
         response => {
+          console.log("Respuesta del servidor:");
           console.log(response);
+          if(response.status === 'success'){
+            this.status = 'success';
+            this.token = response.token;
+            this.identity = response.userdata;
+            localStorage.setItem('token', this.token);
+            localStorage.setItem('identity', JSON.stringify(this.identity));
+            // Redirección a inicio
+            this._router.navigateByUrl('/inicio');
+          }
         },
         error => {
           this.status = 'error';
           console.log(<any>error);
         }
       );
+    }
+
+    logout(){
+      this._route.params.subscribe( params => {
+        let logout = +params['sure'];
+
+        if(logout == 1){
+          localStorage.removeItem('identity');
+          localStorage.removeItem('token');
+          this.identity = null;
+          this.token = '';
+
+          // Redirección a inicio
+          this._router.navigateByUrl('/inicio');
+          //location.reload();
+        }
+      });
     }
 
 }
