@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { routing, appRoutingProviders } from './app.routing';
 
 import { AppComponent } from './app.component';
@@ -20,7 +21,8 @@ import { ErrorComponent } from './components/error/error.component';
   imports: [
     BrowserModule,
     FormsModule,
-    routing
+    routing,
+    HttpClientModule
   ],
   providers: [
     appRoutingProviders
