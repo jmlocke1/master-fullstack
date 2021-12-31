@@ -134,15 +134,16 @@ class UserController extends Controller
                 unset($params_array['password']);
                 unset($params_array['created_at']);
                 unset($params_array['remember_token']);
+                unset($params_array['gettoken']);
                 // Actualizar usuario en bbdd
                 $user_update = User::where('id', $user->sub)->update($params_array);
                 // Devolver array con resultado
                 $data = array(
-                    'code' => 400,
+                    'code' => 200,
                     'status' => 'success',
                     'user' => $user,
                     'changes' => $params_array,
-                    'validate' => $validate->fails()
+                    'Estado actualización' => $user_update
                 );
             }
         }

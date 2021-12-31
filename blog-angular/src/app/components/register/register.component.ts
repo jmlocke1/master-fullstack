@@ -11,13 +11,12 @@ import { UserService } from 'src/app/services/user.service';
 export class RegisterComponent implements OnInit {
   public page_title: string;
   public user: User;
-  public status: string;
+  public status: string = '';
   constructor(
     private _userService: UserService
   ) { 
     this.page_title = 'Regístrate';
-    this.user = new User(1, '', '', 'ROLE_USER', '', '', '','');
-    this.status = '';
+    this.user = new User();
   }
 
   ngOnInit(): void {
@@ -40,8 +39,6 @@ export class RegisterComponent implements OnInit {
         console.log(<any> error);
       }
     );
-    
-    
   }
 
 }

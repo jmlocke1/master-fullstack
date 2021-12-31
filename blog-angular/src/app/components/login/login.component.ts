@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent implements OnInit {
     public page_title: string;
     public user: User;
-    public status: string;
+    public status: string = '';
     public token:string = '';
     public identity:any ;
     constructor(
@@ -21,8 +21,7 @@ export class LoginComponent implements OnInit {
       private _route: ActivatedRoute
     ) { 
         this.page_title = 'Identifícate';
-        this.user = new User(1, '', '', 'ROLE_USER', '', '', '','');
-        this.status = '';
+        this.user = new User();
     }
 
     ngOnInit(): void {
@@ -38,7 +37,7 @@ export class LoginComponent implements OnInit {
           if(response.status === 'success'){
             this.status = 'success';
             this.token = response.token;
-            this.identity = response.userdata;
+            this.identity = response.user;
             localStorage.setItem('token', this.token);
             localStorage.setItem('identity', JSON.stringify(this.identity));
             // Redirección a inicio
