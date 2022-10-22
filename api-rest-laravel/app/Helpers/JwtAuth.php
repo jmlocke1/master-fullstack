@@ -104,6 +104,6 @@ class JwtAuth {
     }
     
     public static function factory(): JwtAuth {
-        return new \JwtAuth();
+        return new JwtAuth();
     }
 }

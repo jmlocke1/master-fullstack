@@ -1,5 +1,5 @@
 <?php
-namespace app\Utilities;
+namespace App\Utilities;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;

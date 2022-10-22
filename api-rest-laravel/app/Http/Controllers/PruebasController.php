@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
+use App\Utilities\Utilities;
 //use App\Models\User;
 
 class PruebasController extends Controller
@@ -43,7 +44,7 @@ class PruebasController extends Controller
     public function message(){
         $category = \App\Models\Category::findOrFail(1);
         echo '<pre>';
-        echo \Utilities::responseMessage(200, true, '', ['category' => $category]);
+        echo Utilities::responseMessage(200, true, '', ['category' => $category]);
         echo '</pre>';
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Helpers\JwtAuth;
 
 class ApiAuthMiddleware
 {
@@ -18,7 +19,7 @@ class ApiAuthMiddleware
     {
         // Comprobar si el usuario está autentificado
         $token = $request->header('Authorization');
-        $jwtAuth = new \JwtAuth();
+        $jwtAuth = new JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
         if($checkToken){
             // Sacar usuario identificado
